@@ -9,7 +9,6 @@
     outline: none;
     scroll-behavior: smooth;
     font-family: 'Poppins', sans-serif;
-
 }
 
 :root {
@@ -843,7 +842,7 @@ span25  { color: var(--social-color9); }
     .home-content h3 { font-size: 2.6rem; }
     .home-content h1 { font-size: 5rem; }
     
-    /* ── TARGETED FIX APPLIED HERE ── */
+    /* ── TARGETED RESPONSIVE LAYOUT OVERRIDES ── */
     .home-img img    { width: 70vw; margin-top: 4rem; }
     
     /* Increased size from 65% up to 95% to fill the orbit perfectly on mobile */
@@ -851,7 +850,7 @@ span25  { color: var(--social-color9); }
     
     /* This pushes the entire animation frame downwards so it clears your text and buttons completely */
     .hero-container  { margin-top: 9rem !important; } 
-    /* ─────────────────────────────── */
+    /* ───────────────────────────────────────── */
 
     .about { flex-direction: column-reverse; }
     .about img { width: 65vw; margin-top: 4rem; }
@@ -913,7 +912,10 @@ details[open] { padding: 0.5em; margin-bottom: 0.5em; }
     justify-content: center;
     align-items: center;
     perspective: 2000px;
-    touch-action: none;
+    
+    /* ── SCROLL PASSTHROUGH FIXES APPLIED HERE ── */
+    touch-action: pan-y;     /* Allows touch swipe interactions to fall back to natural page scrolling[cite: 1] */
+    pointer-events: none;    /* Makes the entire area invisible to mouse wheel capture[cite: 1] */
 }
 
 /* Ambient Backlight */
@@ -956,7 +958,10 @@ details[open] { padding: 0.5em; margin-bottom: 0.5em; }
     width: 93px;
     height: 93px;
     cursor: pointer;
+    
+    /* Brings back mouse hover/clicks only on individual items on desktop layout[cite: 1] */
     pointer-events: auto;
+    
     transform-style: preserve-3d;
     display: flex;
     justify-content: center;
@@ -1003,6 +1008,8 @@ details[open] { padding: 0.5em; margin-bottom: 0.5em; }
     .app-icon {
         width: 55px;
         height: 55px;
+        /* Completely neutralizes icons on mobile layouts to completely unblock swipe motions[cite: 1] */
+        pointer-events: none !important;
     }
 }
 
