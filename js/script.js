@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
   updateDateGreeting();
   setInterval(updateDateGreeting, 60000);
 
-// ========================
+  // ========================
   // CONTACT FORMS
   // ========================
   const contactForm = document.getElementById("contactForm");
@@ -148,7 +148,7 @@ document.addEventListener("DOMContentLoaded", () => {
   } else if (smsBtn) {
     smsBtn.style.display = "none";
   }
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Prevent links from stopping particles
   document.querySelectorAll(".services-box .btn2").forEach(link => {
     link.addEventListener("click", e => {
@@ -165,7 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
       window.open("images/main-site/INFO/CV.jpg", "_blank");
     });
   }
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // ========================
   // VIDEO AUTOPLAY + SCROLL
   // ========================
@@ -241,32 +241,32 @@ document.addEventListener("DOMContentLoaded", () => {
       typeSpeed: 80, backSpeed: 60, backDelay: 1500, loop: true
     });
   }
-// ========================
-// VANTA CLOUDS BACKGROUND
-// ========================
-window.addEventListener('load', function () {
-  VANTA.WAVES({
-    el: '#vanta-bg',
-    THREE: THREE,
-    mouseControls: true,
-    touchControls: true,
-    gyroControls: false,
-    minHeight: 200.00,
-    minWidth: 200.00,
-    scale: 1.00,
-    scaleMobile: 1.00,
-    color: 0x0,
-    shininess: 87.00,
-    waveHeight: 30.00,
-    waveSpeed: 0.95,
-    zoom: 1.47,
-    backgroundColor: 0x1b1519
+  // ========================
+  // VANTA CLOUDS BACKGROUND
+  // ========================
+  window.addEventListener('load', function () {
+    VANTA.WAVES({
+      el: '#vanta-bg',
+      THREE: THREE,
+      mouseControls: true,
+      touchControls: true,
+      gyroControls: false,
+      minHeight: 200.00,
+      minWidth: 200.00,
+      scale: 1.00,
+      scaleMobile: 1.00,
+      color: 0x0,
+      shininess: 87.00,
+      waveHeight: 30.00,
+      waveSpeed: 0.95,
+      zoom: 1.47,
+      backgroundColor: 0x1b1519
+    });
   });
-});
 
-// ========================
-// 3D ORBIT ANIMATION (PC PERSISTENT + MOBILE POSITIONING)
-// ========================
+  // ========================
+  // 3D ORBIT ANIMATION (PC PERSISTENT + MOBILE POSITIONING)
+  // ========================
   const orbitContainer = document.getElementById('interactiveHero');
   const orbitIcons = document.querySelectorAll('.app-icon');
 
@@ -282,17 +282,14 @@ window.addEventListener('load', function () {
     let offsetY = -145;
 
     // ── MOBILE-ONLY SIZING ADDITION ─────────────────────────────────
-    // This function will run on load and on resize to override sizes ONLY for mobile.
     function handleResponsiveSizing() {
       if (window.innerWidth <= 768) {
-        // These values trigger ONLY on mobile screens
         radiusX = 110;  
         radiusY = 110;  
         radiusZ = 60;   
         offsetX = 0;
-        offsetY = -80;  // Shifts it perfectly into place on mobile viewports
+        offsetY = -80;  
       } else {
-        // These are your EXACT original PC values. They remain untouched.
         radiusX = 200;
         radiusY = 200;
         radiusZ = 120;
@@ -301,7 +298,6 @@ window.addEventListener('load', function () {
       }
     }
     
-    // Run it instantly on load, and listen for screen resizing
     handleResponsiveSizing();
     window.addEventListener('resize', handleResponsiveSizing);
     // ────────────────────────────────────────────────────────────────
@@ -310,8 +306,8 @@ window.addEventListener('load', function () {
     const angleSpread = (2 * Math.PI) / totalIcons;
 
     // ── AUTO-SPIN SETTINGS ──────────────────────────
-    const autoSpinDelay   = 2000;  // pause (ms) before each step
-    const autoSpinPause   = 1000;  // pause after manual scroll (ms)
+    const autoSpinDelay   = 2000;  
+    const autoSpinPause   = 1000;  
     // ────────────────────────────────────────────────
 
     let autoSpinTimer  = null;
@@ -351,7 +347,6 @@ window.addEventListener('load', function () {
           topIconElement = icon;
         }
 
-        // Adaptive Bottom fade logic (Safely morphs depending on active screen sizes)
         const isMobile = window.innerWidth <= 768;
         const fadeThreshold = offsetY + (isMobile ? 15 : 30);
         const fadeRange = isMobile ? 80 : 140;
@@ -372,7 +367,6 @@ window.addEventListener('load', function () {
         icon.style.transform = `translate3d(${x}px, ${y}px, ${z}px)`;
       });
 
-      // Toggle top peak class
       orbitIcons.forEach(icon => {
         if (icon === topIconElement) {
           icon.classList.add('is-top');
@@ -384,32 +378,40 @@ window.addEventListener('load', function () {
       requestAnimationFrame(positionOrbitIcons);
     }
 
-    // Scroll wheel — manual override, pauses auto-spin temporarily
+    // ── TARGETED FIX APPLIED HERE ──
+    // Scroll wheel option is now completely blocked/bypassed on mobile views
     orbitContainer.addEventListener('wheel', (e) => {
-      e.preventDefault();
-      lastManualTime = Date.now();
-      currentStep += Math.sign(e.deltaY);
-      scheduleAutoSpin();
+      if (window.innerWidth > 768) {
+        e.preventDefault();
+        lastManualTime = Date.now();
+        currentStep += Math.sign(e.deltaY);
+        scheduleAutoSpin();
+      }
     }, { passive: false });
 
-    // Touch swipe support for mobile
+    // Touch swipe handling now only runs and intercepts swipes on screens wider than mobile devices
     let touchStartY = 0;
     orbitContainer.addEventListener('touchstart', (e) => {
-      touchStartY = e.touches[0].clientY;
-    }, { passive: true });
-
-    orbitContainer.addEventListener('touchmove', (e) => {
-      const delta = touchStartY - e.touches[0].clientY;
-      if (Math.abs(delta) > 10) {
-        lastManualTime = Date.now();
-        currentStep += Math.sign(delta);
+      if (window.innerWidth > 768) {
         touchStartY = e.touches[0].clientY;
-        scheduleAutoSpin();
       }
     }, { passive: true });
 
+    orbitContainer.addEventListener('touchmove', (e) => {
+      if (window.innerWidth > 768) {
+        const delta = touchStartY - e.touches[0].clientY;
+        if (Math.abs(delta) > 10) {
+          lastManualTime = Date.now();
+          currentStep += Math.sign(delta);
+          touchStartY = e.touches[0].clientY;
+          scheduleAutoSpin();
+        }
+      }
+    }, { passive: true });
+    // ───────────────────────────────
+
     positionOrbitIcons();
-    scheduleAutoSpin(); // start auto-spin on load
+    scheduleAutoSpin(); 
   }
 
 });
