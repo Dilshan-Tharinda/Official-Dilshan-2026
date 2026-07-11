@@ -265,7 +265,7 @@ window.addEventListener('load', function () {
 });
 
 // ========================
-// 3D ORBIT ANIMATION
+// 3D ORBIT ANIMATION (PC PERSISTENT + MOBILE POSITIONING)
 // ========================
   const orbitContainer = document.getElementById('interactiveHero');
   const orbitIcons = document.querySelectorAll('.app-icon');
@@ -274,12 +274,37 @@ window.addEventListener('load', function () {
     let currentStep = 0;
     let baseAngle = 0;
 
-    const radiusX = 200;
-    const radiusY = 200;
-    const radiusZ = 120;
+    // ── KEEPING YOUR EXACT ORIGINAL DESKTOP VALUES AS THE DEFAULT ──
+    let radiusX = 200;
+    let radiusY = 200;
+    let radiusZ = 120;
+    let offsetX = 0;
+    let offsetY = -145;
 
-    const offsetX = 0;
-    const offsetY = -145;
+    // ── MOBILE-ONLY SIZING ADDITION ─────────────────────────────────
+    // This function will run on load and on resize to override sizes ONLY for mobile.
+    function handleResponsiveSizing() {
+      if (window.innerWidth <= 768) {
+        // These values trigger ONLY on mobile screens
+        radiusX = 110;  
+        radiusY = 110;  
+        radiusZ = 60;   
+        offsetX = 0;
+        offsetY = -80;  // Shifts it perfectly into place on mobile viewports
+      } else {
+        // These are your EXACT original PC values. They remain untouched.
+        radiusX = 200;
+        radiusY = 200;
+        radiusZ = 120;
+        offsetX = 0;
+        offsetY = -145;
+      }
+    }
+    
+    // Run it instantly on load, and listen for screen resizing
+    handleResponsiveSizing();
+    window.addEventListener('resize', handleResponsiveSizing);
+    // ────────────────────────────────────────────────────────────────
 
     const totalIcons = orbitIcons.length;
     const angleSpread = (2 * Math.PI) / totalIcons;
@@ -296,7 +321,6 @@ window.addEventListener('load', function () {
       clearTimeout(autoSpinTimer);
       autoSpinTimer = setTimeout(function tick() {
         const now = Date.now();
-        // If user scrolled recently, wait before resuming
         if (now - lastManualTime < autoSpinPause) {
           autoSpinTimer = setTimeout(tick, autoSpinPause - (now - lastManualTime));
           return;
@@ -327,9 +351,13 @@ window.addEventListener('load', function () {
           topIconElement = icon;
         }
 
-        // Bottom fade logic
-        if (y > (offsetY + 30)) {
-          const fadeFactor = Math.min(1, (y - (offsetY + 30)) / 140);
+        // Adaptive Bottom fade logic (Safely morphs depending on active screen sizes)
+        const isMobile = window.innerWidth <= 768;
+        const fadeThreshold = offsetY + (isMobile ? 15 : 30);
+        const fadeRange = isMobile ? 80 : 140;
+
+        if (y > fadeThreshold) {
+          const fadeFactor = Math.min(1, (y - fadeThreshold) / fadeRange);
           icon.style.zIndex = 5;
           innerImg.style.opacity = `${1 - (fadeFactor * 1.0)}`;
           innerImg.style.filter = `blur(${fadeFactor * 2}px) brightness(0.35) grayscale(50%)`;
